@@ -56,7 +56,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            max-width: 1200px;
+            max-width: 1920px;
             margin: 0 auto;
             padding: 0 20px;
         }
@@ -186,7 +186,7 @@
         .content {
             margin-top: 90px;
             padding: 20px;
-            max-width: 1200px;
+            max-width: 1920px;
             margin-left: auto;
             margin-right: auto;
         }
@@ -218,11 +218,15 @@
 
             <ul class="menu-items" id="menuItems">
                 <li><a href="https://joi.mysmax.store/RequestAuthCode"
-                       class="active">Generate AuthCode</a></li>
+                       class="active">AuthCode생성</a></li>
                 <li><a href="https://joi.mysmax.store/RequestTokens"
-                       class="active">Generate OAuthToken</a></li>
+                       class="active">OAuthToken생성</a></li>
                 <li><a href= "https://joi.mysmax.store/RefreshTokens"
-                       class="active">Refresh OAuthToken</a></li>
+                       class="active">OAuthToken갱신</a></li>
+                <li><a href="https://joi.mysmax.store/ClearTokens"
+                       class="active">토큰/데이터삭제</a></li>
+                <li><a href="https://joi.mysmax.store/GetDevices"
+                       class="active">디바이스정보가져오기</a></li>
             </ul>
         </nav>
     </header>
@@ -230,23 +234,145 @@
     <div class="content">
 
         <h3>SmartApp Data</h3>
-
-        <table class="left" border="2" style="border-collapse: collapse;">
+        <table class="left" border="2" style="width: 100%; border-collapse: collapse;">
 
             <tr>
-                <th>Item</td>
-                <th>Value</td>
+                <th style="width: 30%;">Item</th>
+                <th style="width: 70%;">Value</th>
             </tr>
 
-            {% for key in Data.keys() %}
+            {% for key in Data['SmartAppData'].keys() %}
                 <tr>
                     <td>{{ key }}</td>
-                    <td>{{ Data[key] }}</td>
+                    <td>{{ Data['SmartAppData'][key] }}</td>
                 </tr>
             {% endfor %}
 
         </table>
 
+
+        <br>
+        <h3>OAuth2.0 Data</h3>
+        <table class="left" border="2" style="width: 100%; border-collapse: collapse;">
+
+            <tr>
+                <th style="width: 30%;">Item</th>
+                <th style="width: 70%;">Value</th>
+            </tr>
+
+            {% for key in Data['OAuthData'].keys() %}
+                <tr>
+                    <td>{{ key }}</td>
+                    <td>{{ Data['OAuthData'][key] }}</td>
+                </tr>
+            {% endfor %}
+
+        </table>
+
+        <br>
+
+        <form action="https://joi.mysmax.store/DeviceCommand" method="get">
+
+            <div style="display: flex; justify-content: left">
+                <label style="font-size: 18px; font-weight: 500; 
+                              padding-right: 12px;
+                              text-align: right; 
+                              width: 30%;" for="DeviceID">DeviceID</label>
+                <input style="width: 70%; color: darkred; font-weight: 400; margin-left: 0px; font-size: 18px"
+                       type="text" placeholder="233fb748-86e7-49f4-89f6-00b74f6e635a"
+                       id="DeviceID" name="DeviceID" value={{ Data['CommandData']['DeviceID'] }} >
+            </div>
+
+            <div style="display: flex; justify-content: left">
+                <label style="font-size: 18px; font-weight: 500; 
+                              text-align: right; 
+                              padding-right: 12px;
+                        width: 30%;" for="Component">Component</label>
+                <input style="width: 70%; color: darkred; font-weight: 400; margin-left: 0px; font-size: 18px"
+                       type="text" placeholder="main" id="Component" name="Component" value={{ Data['CommandData']['Component'] }} >
+            </div>
+
+            <div style="display: flex; justify-content: left">
+                <label style="font-size: 18px; font-weight: 500; 
+                              text-align: right; 
+                              padding-right: 12px;
+                        width: 30%;" for="Capability">Capability</label>
+                <input style="width: 70%; color: darkred; font-weight: 400; margin-left: 0px; font-size: 18px"
+                       type="text" placeholder="switch" id="Capability" name="Capability" value={{ Data['CommandData']['Capability'] }} >
+            </div>
+
+            <div style="display: flex; justify-content: left">
+                <label style="font-size: 18px; font-weight: 500; 
+                              text-align: right; 
+                              padding-right: 12px;
+                        width: 30%;" for="Command">Command</label>
+                <input style="width: 70%; color: darkred; font-weight: 400; margin-left: 0px; font-size: 18px"
+                       type="text" placeholder="on" id="Command" name="Command" value={{ Data['CommandData']['Command'] }} >
+            </div>
+
+            <div style="display: flex; justify-content: left">
+                <label style="font-size: 18px; font-weight: 500; 
+                              text-align: right; 
+                              padding-right: 12px;
+                        width: 30%;" for="Arguments">Arguments</label>
+                <input style="width: 70%; color: darkred; font-weight: 400; margin-left: 0px; font-size: 18px"
+                       type="text" placeholder="" id="Arguments" name="Arguments" value={{ Data['CommandData']['Arguments'] }} >
+            </div>
+
+            <div style="display: flex; justify-content: left">
+                <label style="font-size: 18px; font-weight: 500; 
+                              text-align: right; 
+                              padding-right: 12px;
+                        width: 30%;";></label>
+                <input style="color: RoyalBlue; font-weight: 600; font-size: 18px"
+                       type="submit" value="Device Command 실행">
+            </div>
+
+        </form>
+
+
+
+        {% if Data['DeviceData']['MyDevices'] %}
+        <br>
+        <div style="width:100%;
+                white-space: wrap;
+                overflow: auto;">
+            <h3>Device Data</h3>
+
+            <table class="left" border="2" style="width: 100%; border-collapse: collapse;">
+
+                <tr>
+                    <th style="width: 30%;">Device</th>
+                    <th style="width: 70%;">Value</th>
+                </tr>
+
+                <tr>
+                    {% for key in Data['DeviceData']['MyDevices'].keys() %}
+                    <tr>
+                        <td style="width: 30%;
+                                vertical-align: center;">
+                                {{ Data['DeviceData']['MyDevices'][key]['label'] }}
+                                <br>
+                                {{ Data['DeviceData']['MyDevices'][key]['name'] }}
+                                <br>
+                                By {{ Data['DeviceData']['MyDevices'][key]['manufacturerName'] }}
+                                <br>
+                                {{ Data['DeviceData']['MyDevices'][key]['deviceManufacturerCode'] }}
+                        </td>
+                        <td style="width: 70%; 
+                                    word-break: break-all; 
+                                    text-align: left;";>
+                                {{ Data['DeviceData']['MyDevices'][key] }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+
+                </tr>
+            </table>
+
+        </div>
+        {% endif %}
 
     </div>
     
@@ -284,3 +410,4 @@
     </script>
 </body>
 </html>
+
